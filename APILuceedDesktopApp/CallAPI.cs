@@ -9,6 +9,7 @@ namespace APILuceedDesktopApp
     public partial class CallAPI : Form
     {
         SqlConnection con = new SqlConnection("Data Source=.;Initial Catalog=LuceedAPI;Integrated Security=True;");
+
         public int Id;
 
         public CallAPI()
@@ -16,7 +17,7 @@ namespace APILuceedDesktopApp
             InitializeComponent();
             displayData();
         }
-
+        #region GetProducts
         private void button1_Click(object sender, EventArgs e)
         {
             String query = "SELECT * FROM Product";
@@ -29,7 +30,9 @@ namespace APILuceedDesktopApp
             dataGridView1.DataSource = dt;
             con.Close();
         }
+        #endregion
 
+        #region GetPaymentType
         private void button2_Click(object sender, EventArgs e)
         {
             String query = "select * from Payment";
@@ -42,7 +45,9 @@ namespace APILuceedDesktopApp
             dataGridView1.DataSource = dt;
             con.Close();
         }
+        #endregion
 
+        #region GetAllProducts
         private void button3_Click(object sender, EventArgs e)
         {
             String query = "select * from Product,Payment";
@@ -56,7 +61,7 @@ namespace APILuceedDesktopApp
             con.Close();
             displayData();
         }
-
+        #endregion
         private void CallAPI_Load(object sender, EventArgs e)
         {
 
@@ -86,24 +91,7 @@ namespace APILuceedDesktopApp
             con.Close();
         }
 
-        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-            displayData();
-
-        }
-        protected void SaveInfo()
-        {
-            string query = "INSERT INTO Product " + "(Id,Aritkli_Uid,Naziv_Artikla,Kolicina,Iznos,Usluga)" + "VALUES (@Id,@Artikli_Uid,@Naziv_Artikla,@Kolicina,@Iznos,@Usluga)";
-            SqlCommand cmd = new SqlCommand(query, con);
-            cmd.Parameters.AddWithValue("@Id", txtBox1.Text);
-            cmd.Parameters.AddWithValue("@Aritkli_Uid", txtBox2.Text);
-            cmd.Parameters.AddWithValue("@Naziv_Artikla", txtBox3.Text);
-            cmd.Parameters.AddWithValue("@Kolicina", txtBox4.Text);
-            cmd.Parameters.AddWithValue("@Iznos", txtBox5.Text);
-            cmd.Parameters.AddWithValue("@Usluga", txtBox6.Text);
-            cmd.ExecuteNonQuery();
-        }
-
+    #region Insertbtn
         private void button4_Click(object sender, EventArgs e)
         {
             if (IsValid())
@@ -132,6 +120,9 @@ namespace APILuceedDesktopApp
                 ResetControls();
             }
         }
+        #endregion
+
+
         private bool IsValid()
         {
             if (txtBox1.Text == string.Empty)
@@ -152,7 +143,7 @@ namespace APILuceedDesktopApp
         {
 
         }
-
+        #region Deletebtn
         private void btnDelete_Click(object sender, EventArgs e)
         {
             if(Id > 0)
@@ -168,34 +159,38 @@ namespace APILuceedDesktopApp
                 ResetControls();
             }
         }
+        #endregion
 
+        #region Updatebtn
         private void btnUpdate_Click(object sender, EventArgs e)
         {
-            //if (Id > 0)
-            //{
-            //    SqlCommand cmd = new SqlCommand("UPDATE Product SET Id = @Id,Artikli_Uid = @Artikli_Uid,Naziv_Artikla = @Naziv_Artikla,Kolicina = @Kolicina,Iznos = @Iznos,Usluga = @Usluga ", con);
-            //    cmd.CommandType = CommandType.Text;
-            //    cmd.Parameters.AddWithValue("@Id", txtBox1.Text);
-            //    cmd.Parameters.AddWithValue("@Artikli_Uid", txtBox2.Text);
-            //    cmd.Parameters.AddWithValue("@Naziv_Artikla", txtBox3.Text);
-            //    cmd.Parameters.AddWithValue("@Kolicina", txtBox4.Text);
-            //    cmd.Parameters.AddWithValue("@Iznos", txtBox5.Text);
-            //    cmd.Parameters.AddWithValue("@Usluga", txtBox6.Text);
+            if (Id > 0)
+            {
+                SqlCommand cmd = new SqlCommand("UPDATE Product SET Id = @Id,Artikli_Uid = @Artikli_Uid,Naziv_Artikla = @Naziv_Artikla,Kolicina = @Kolicina,Iznos = @Iznos,Usluga = @Usluga ", con);
+                cmd.CommandType = CommandType.Text;
+                cmd.Parameters.AddWithValue("@Id", txtBox1.Text);
+                cmd.Parameters.AddWithValue("@Artikli_Uid", txtBox2.Text);
+                cmd.Parameters.AddWithValue("@Naziv_Artikla", txtBox3.Text);
+                cmd.Parameters.AddWithValue("@Kolicina", txtBox4.Text);
+                cmd.Parameters.AddWithValue("@Iznos", txtBox5.Text);
+                cmd.Parameters.AddWithValue("@Usluga", txtBox6.Text);
 
 
-            //    con.Open();
-            //    cmd.ExecuteNonQuery();
-            //    con.Close();
-            //    MessageBox.Show("Articles are succesfully updated !", "Updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            //    displayData();
-            //    ResetControls();
-            //}
-            //else
-            //{
-            //    MessageBox.Show("You need to fill the forms!", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            //}
+                con.Open();
+                cmd.ExecuteNonQuery();
+                con.Close();
+                MessageBox.Show("Articles are succesfully updated !", "Updated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                displayData();
+                ResetControls();
+            }
+            else
+            {
+                MessageBox.Show("You need to fill the forms!", "Select", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
+        #endregion
 
+        #region ResetData
         private void btnReset_Click(object sender, EventArgs e)
         {
             ResetControls();
@@ -213,6 +208,7 @@ namespace APILuceedDesktopApp
 
             txtBox1.Focus();
         }
+       
 
         private void dataGridView1_CellClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -225,7 +221,10 @@ namespace APILuceedDesktopApp
             txtBox6.Text = dataGridView1.SelectedRows[0].Cells[5].Value.ToString();
 
         }
+        #endregion
 
+
+        #region Searchbtn
         private void button4_Click_1(object sender, EventArgs e)
         {
             try
@@ -258,11 +257,12 @@ namespace APILuceedDesktopApp
             }
 
         }
-
+       
         private void txtSearch_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar == (char)13)//enter
                 btnSearch.PerformClick();
         }
+        #endregion
     }
 }
